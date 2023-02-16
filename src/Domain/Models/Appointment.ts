@@ -24,7 +24,7 @@ class Appointment {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   public updateAt: Date;
-  public constructor(start: Date | undefined, end: Date | undefined) {
+  public constructor(start?: Date, end?: Date) {
     if (!start || !end) return;
     if (start.getTime() >= end.getTime() || start.getTime() <= Date.now()) {
       throw new InvalidDateRange('start or end of the range is invalid');
