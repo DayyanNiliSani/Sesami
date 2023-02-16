@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ReadAppointmentDto } from 'src/Infra/Repository/Appointment/Appointment.repo.dto';
 import AppointmentService from 'src/Service/Appointment/Appointment.service';
+import UpsertAppointmentRequest from '../Dtos/Requests/Appointment.requests.dto';
 
 @Controller('/appointment/')
 export class AppointmentController {

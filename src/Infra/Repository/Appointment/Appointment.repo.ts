@@ -1,13 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Appointment from 'src/Domain/Models/Appointment';
-import {
-  Repository,
-} from 'typeorm';
-import {
-  mapDtoToAppointment,
-  UpsertAppointmentDto,
-} from './Appointment.repo.dto';
+import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { UpsertAppointmentDto } from './Appointment.repo.dto';
 
 @Injectable()
 export default class AppointmentRepo {
@@ -16,7 +11,7 @@ export default class AppointmentRepo {
   ) {}
 
   public async Create(dto: UpsertAppointmentDto): Promise<Appointment> {
-    const model = mapDtoToAppointment(dto);
+    const model = new Appointment(dto.start, dto.end);
     await this.repo.save(model);
     return model;
   }
@@ -36,4 +31,19 @@ export default class AppointmentRepo {
     return model;
   }
 
+  public async CheckIfAppointmentExistsForThisRange(
+    selectedStart: Date,
+    selectedEnd: Date,
+  ): Promise<boolean> {
+    const result = await this.repo.exist({
+      where: [
+        {
+          start: LessThanOrEqual(selectedEnd),
+          end: MoreThanOrEqual(selectedStart),
+        },
+      ],
+    });
+
+    return result;
+  }
 }

@@ -1,10 +1,5 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { InvalidDateRange } from '../Errors/InvalidDateRange.error';
 
 @Entity()
 class Appointment {
@@ -29,6 +24,15 @@ class Appointment {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   public updateAt: Date;
+  public constructor(start: Date | undefined, end: Date | undefined) {
+    if (!start || !end) return;
+    if (start.getTime() >= end.getTime() || start.getTime() <= Date.now()) {
+      throw new InvalidDateRange('start or end of the range is invalid');
+    }
+
+    this.start = start;
+    this.end = end;
+  }
 }
 
 export default Appointment;
