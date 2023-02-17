@@ -1,6 +1,15 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { InvalidDateRange } from '../Errors/InvalidDateRange.error';
 import AppointmentChanges from './AppointmentChanges';
+import Organization from './Organization';
 
 @Entity()
 class Appointment {
@@ -22,7 +31,10 @@ class Appointment {
   @OneToMany(() => AppointmentChanges, (appointmentChanges) => appointmentChanges.appointment, { cascade: true })
   public changes: AppointmentChanges[];
 
-  public constructor(start?: Date, end?: Date) {
+  @ManyToOne(() => Organization, (organization) => organization.appointments)
+  public organization: Organization;
+
+  public constructor(start?: Date, end?: Date, organization?: Organization) {
     if (!start || !end) return;
     if (start.getTime() >= end.getTime() || start.getTime() <= Date.now()) {
       throw new InvalidDateRange('start or end of the range is invalid');
@@ -30,6 +42,7 @@ class Appointment {
 
     this.start = start;
     this.end = end;
+    this.organization = organization;
   }
 }
 

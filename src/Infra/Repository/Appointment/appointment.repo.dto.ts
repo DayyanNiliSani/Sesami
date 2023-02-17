@@ -1,15 +1,23 @@
 import Appointment from 'src/Domain/Models/Appointment';
 
-export interface UpsertAppointmentDto {
+export interface CreateAppointmentDto {
+  start: Date;
+  end: Date;
+  organizationId: number;
+}
+
+export interface UpdateAppointmentDto {
   start: Date;
   end: Date;
 }
 
-export interface ReadAppointmentDto extends UpsertAppointmentDto {
+export interface ReadAppointmentDto {
   id: number;
   updateAt: Date;
   createAt: Date;
   changes: ReadAppointmentChangesDto[];
+  start: Date;
+  end: Date;
 }
 
 export interface ReadAppointmentChangesDto {

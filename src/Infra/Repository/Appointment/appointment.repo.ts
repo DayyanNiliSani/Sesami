@@ -1,21 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Appointment from 'src/Domain/Models/Appointment';
+import Organization from 'src/Domain/Models/Organization';
 import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
-import { UpsertAppointmentDto } from './Appointment.repo.dto';
+import { CreateAppointmentDto } from './appointment.repo.dto';
 
 @Injectable()
 export default class AppointmentRepo {
   public constructor(@InjectRepository(Appointment) private repo: Repository<Appointment>) {}
 
-  public async Create(dto: UpsertAppointmentDto): Promise<Appointment> {
-    const model = new Appointment(dto.start, dto.end);
+  public async Create(dto: CreateAppointmentDto, organization: Organization): Promise<Appointment> {
+    const model = new Appointment(dto.start, dto.end, organization);
     await this.repo.save(model);
     return model;
   }
 
-  public async GetAll(): Promise<Appointment[]> {
+  public async GetAll(organizationId: number): Promise<Appointment[]> {
     const models = await this.repo.find({
+      where: {
+        organization: {
+          id: organizationId,
+        },
+      },
       relations: {
         changes: true,
       },
@@ -28,6 +34,7 @@ export default class AppointmentRepo {
       where: { id },
       relations: {
         changes: true,
+        organization: true,
       },
     });
     return model;
@@ -38,12 +45,19 @@ export default class AppointmentRepo {
     return model;
   }
 
-  public async CheckIfAppointmentExistsForThisRange(selectedStart: Date, selectedEnd: Date): Promise<boolean> {
+  public async CheckIfAppointmentExistsForThisRange(
+    selectedStart: Date,
+    selectedEnd: Date,
+    organizationId: number,
+  ): Promise<boolean> {
     const result = await this.repo.exist({
       where: [
         {
           start: LessThanOrEqual(selectedEnd),
           end: MoreThanOrEqual(selectedStart),
+          organization: {
+            id: organizationId,
+          },
         },
       ],
     });

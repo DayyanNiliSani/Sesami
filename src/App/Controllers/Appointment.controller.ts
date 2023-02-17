@@ -1,29 +1,24 @@
 import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
-import { ReadAppointmentDto } from 'src/Infra/Repository/Appointment/Appointment.repo.dto';
+import { ReadAppointmentDto } from 'src/Infra/Repository/Appointment/appointment.repo.dto';
 import AppointmentService from 'src/Service/Appointment/Appointment.service';
-import UpsertAppointmentRequest from '../Dtos/Requests/Appointment.requests.dto';
+import { CreateAppointmentRequest, UpdateAppointmentRequest } from '../Dtos/Requests/Appointment.requests.dto';
 
 @Controller('/appointment/')
 export class AppointmentController {
   constructor(private readonly service: AppointmentService) {}
 
-  @Get('')
-  async getAll(): Promise<ReadAppointmentDto[]> {
-    return await this.service.getAllAppointment();
+  @Get('/:organizationId')
+  async getAll(@Param('organizationId') organizationId: number): Promise<ReadAppointmentDto[]> {
+    return await this.service.getAll(organizationId);
   }
 
   @Post('')
-  async create(
-    @Body() body: UpsertAppointmentRequest,
-  ): Promise<ReadAppointmentDto> {
-    return await this.service.createAppointment(body);
+  async create(@Body() body: CreateAppointmentRequest): Promise<ReadAppointmentDto> {
+    return await this.service.create(body);
   }
 
   @Put('/:id')
-  async update(
-    @Param('id') id: number,
-    @Body() body: UpsertAppointmentRequest,
-  ): Promise<ReadAppointmentDto> {
-    return await this.service.updateAppointment(id, body);
+  async update(@Param('id') id: number, @Body() body: UpdateAppointmentRequest): Promise<ReadAppointmentDto> {
+    return await this.service.update(id, body);
   }
 }
