@@ -6,6 +6,7 @@ import {
 } from 'src/Infra/Repository/Appointment/Appointment.repo.dto';
 import AppointmentRepo from 'src/Infra/Repository/Appointment/Appointment.repo';
 import { InvalidDateRange } from 'src/Domain/Errors/InvalidDateRange.error';
+import AppointmentChanges from 'src/Domain/Models/AppointmentChanges';
 
 @Injectable()
 export default class AppointmentService {
@@ -21,11 +22,15 @@ export default class AppointmentService {
   }
 
   public async updateAppointment(id: number, dto: UpsertAppointmentDto): Promise<ReadAppointmentDto> {
-    var model = await this.repo.Get(id);
+    let model = await this.repo.Get(id);
     if (!model) throw new NotFoundException();
-    if (this.repo.CheckIfAppointmentExistsForThisRange(dto.start, dto.end)) throw new InvalidDateRange();
+    if (await this.repo.CheckIfAppointmentExistsForThisRange(dto.start, dto.end)) throw new InvalidDateRange();
+    let change = new AppointmentChanges();
+    change.end = model.end;
+    change.start = model.start;
     model.start = dto.start;
     model.end = dto.end;
+    model.changes ? model.changes.push(change) : (model.changes = [change]);
     model = await this.repo.Update(model);
     return mapAppointmentToDto(model);
   }

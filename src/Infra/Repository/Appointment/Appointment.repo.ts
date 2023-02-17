@@ -6,9 +6,7 @@ import { UpsertAppointmentDto } from './Appointment.repo.dto';
 
 @Injectable()
 export default class AppointmentRepo {
-  public constructor(
-    @InjectRepository(Appointment) private repo: Repository<Appointment>,
-  ) {}
+  public constructor(@InjectRepository(Appointment) private repo: Repository<Appointment>) {}
 
   public async Create(dto: UpsertAppointmentDto): Promise<Appointment> {
     const model = new Appointment(dto.start, dto.end);
@@ -17,12 +15,21 @@ export default class AppointmentRepo {
   }
 
   public async GetAll(): Promise<Appointment[]> {
-    const models = await this.repo.find();
+    const models = await this.repo.find({
+      relations: {
+        changes: true,
+      },
+    });
     return models;
   }
 
   public async Get(id: number): Promise<Appointment> {
-    const model = await this.repo.findOne({ where: { id } });
+    const model = await this.repo.findOne({
+      where: { id },
+      relations: {
+        changes: true,
+      },
+    });
     return model;
   }
 
@@ -31,10 +38,7 @@ export default class AppointmentRepo {
     return model;
   }
 
-  public async CheckIfAppointmentExistsForThisRange(
-    selectedStart: Date,
-    selectedEnd: Date,
-  ): Promise<boolean> {
+  public async CheckIfAppointmentExistsForThisRange(selectedStart: Date, selectedEnd: Date): Promise<boolean> {
     const result = await this.repo.exist({
       where: [
         {
