@@ -6,23 +6,16 @@ class Appointment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'varchar', nullable: false })
   start: Date;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'varchar', nullable: false })
   end: Date;
 
-  @CreateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-  })
+  @CreateDateColumn()
   public createAt: Date;
 
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-    onUpdate: 'CURRENT_TIMESTAMP(6)',
-  })
+  @UpdateDateColumn()
   public updateAt: Date;
   public constructor(start?: Date, end?: Date) {
     if (!start || !end) return;
