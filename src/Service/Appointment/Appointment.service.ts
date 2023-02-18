@@ -44,7 +44,7 @@ export default class AppointmentService {
       ['appointmentLock', model.organization.id.toString()],
       1000,
     );
-    if (await this.repo.CheckIfAppointmentExistsForThisRange(dto.start, dto.end, model.organization.id))
+    if (await this.repo.CheckIfAppointmentExistsForThisRange(dto.start, dto.end, model.organization.id, model.id))
       throw new InvalidDateRange();
     let change = new AppointmentChanges();
     change.end = model.end;

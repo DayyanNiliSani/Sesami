@@ -36,3 +36,15 @@ Now lets talk about createdAt and updatedAt. one of the things that is important
 I choose this decisions base on the requirement that i said previously.
 
 ## Features
+For getting the list of API's application, I added swagger to the it as well
+
+In a real life scenario, There might be a time where two users try to book an appointment with conflict. For resolving this conflict, One could use a lock to make sure only one of the appointments is booked. But I decided to use a distributed lock in case the application is run in cluster mode. 
+
+## Installation
+
+I've written the dockerfile and docker-compose file for these project so all you have to do to run this project in your own system is run 2 commands. Unfortunately I couldn't test the docker files due to the Internet problems that I had.
+
+```sh
+    sudo docker-compose build
+    sudo docker-compose up -d
+```

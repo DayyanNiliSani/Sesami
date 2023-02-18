@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Appointment from 'src/Domain/Models/Appointment';
 import Organization from 'src/Domain/Models/Organization';
-import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
+import { LessThanOrEqual, MoreThanOrEqual, Not, Repository } from 'typeorm';
 import { CreateAppointmentDto } from './appointment.repo.dto';
 
 @Injectable()
@@ -49,10 +49,12 @@ export default class AppointmentRepo {
     selectedStart: Date,
     selectedEnd: Date,
     organizationId: number,
+    appointmentId: number = 0,
   ): Promise<boolean> {
     const result = await this.repo.exist({
       where: [
         {
+          id: Not(appointmentId),
           start: LessThanOrEqual(selectedEnd),
           end: MoreThanOrEqual(selectedStart),
           organization: {
