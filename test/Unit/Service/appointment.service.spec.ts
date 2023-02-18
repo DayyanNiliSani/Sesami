@@ -4,6 +4,7 @@ import { InvalidDateRange } from 'src/Domain/Errors/InvalidDateRange.error';
 import Appointment from 'src/Domain/Models/Appointment';
 import AppointmentChanges from 'src/Domain/Models/AppointmentChanges';
 import Organization from 'src/Domain/Models/Organization';
+import { RedLockInstance } from 'src/Infra/Lock/redLock';
 import AppointmentRepo from 'src/Infra/Repository/Appointment/appointment.repo';
 import OrganizationRepo from 'src/Infra/Repository/Organization/organization.repo';
 import AppointmentService from 'src/Service/Appointment/Appointment.service';
@@ -13,11 +14,12 @@ describe('Appointment Service', () => {
   let appointmentRepo: AppointmentRepo;
   let organizationRepo: OrganizationRepo;
   let appointmentService: AppointmentService;
+  let redLockInstance: RedLockInstance;
   beforeAll(async () => {
     moduleRef = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot({
-          type: 'better-sqlite3',
+          type: 'sqlite',
           database: ':memory:',
           dropSchema: true,
           synchronize: true,
@@ -25,12 +27,13 @@ describe('Appointment Service', () => {
         }),
         TypeOrmModule.forFeature([Appointment, Organization, AppointmentChanges]),
       ],
-      providers: [AppointmentRepo, OrganizationRepo],
+      providers: [AppointmentRepo, OrganizationRepo, RedLockInstance],
     }).compile();
 
     appointmentRepo = moduleRef.get<AppointmentRepo>(AppointmentRepo);
     organizationRepo = moduleRef.get<OrganizationRepo>(OrganizationRepo);
-    appointmentService = new AppointmentService(appointmentRepo, organizationRepo);
+    redLockInstance = moduleRef.get<RedLockInstance>(RedLockInstance);
+    appointmentService = new AppointmentService(appointmentRepo, organizationRepo, redLockInstance);
   });
 
   it('createAppointment to throw error', async () => {

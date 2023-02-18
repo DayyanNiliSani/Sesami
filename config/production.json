@@ -1,0 +1,17 @@
+{
+    "api":{
+        "port":8080
+    },
+    "db":{
+        "type":"postgres",
+        "host":"postgres",
+        "port":8081,
+        "username":"postgres_sesami",
+        "password":"postgres_sesami",
+        "database":"sesami"
+    },
+    "redis":{
+        "host":"redis",
+        "port":6379
+    }
+}

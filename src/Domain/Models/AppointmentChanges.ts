@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, TableForeignKey, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  TableForeignKey,
+  UpdateDateColumn,
+} from 'typeorm';
 import Appointment from './Appointment';
 
 @Entity()
@@ -19,4 +27,4 @@ class AppointmentChanges {
   appointment: Appointment;
 }
 
-export default AppointmentChanges
+export default AppointmentChanges;

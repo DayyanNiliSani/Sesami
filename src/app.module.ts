@@ -1,11 +1,11 @@
 import * as config from 'config';
 import { Module } from '@nestjs/common';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Entities } from './Domain/Models';
 import { Repos } from './Infra/Repository';
 import { Services } from './Service';
 import { Controllers } from './App/Controllers';
+import { RedLockInstance } from './Infra/Lock/redLock';
 
 const dbConfig = config.get('db');
 
@@ -19,6 +19,6 @@ const dbConfig = config.get('db');
     TypeOrmModule.forFeature(Entities),
   ],
   controllers: Controllers,
-  providers: [...Repos, ...Services, AppService],
+  providers: [...Repos, ...Services, RedLockInstance],
 })
 export class AppModule {}

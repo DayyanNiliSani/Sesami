@@ -10,7 +10,7 @@ describe('Appointment Repository Tests', () => {
   let appointmentRepo: AppointmentRepo;
   beforeEach(async () => {
     dbConnect = new DataSource({
-      type: 'better-sqlite3',
+      type: 'sqlite',
       database: ':memory:',
       dropSchema: true,
       synchronize: true,
